@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@android:id/tabhost"
+    tools:context=".TabHostActivity"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/tabbar_height" />
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tabbar_height"
+            android:layout_alignParentBottom="true"
+            android:gravity="bottom"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/first_linear"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TabLabel"
+                    android:drawableTop="@drawable/first_tab_selector"
+                    android:text="书架"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/second_linear"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/second_textView"
+                    style="@style/TabLabel"
+                    android:drawableTop="@drawable/second_tab_selector"
+                    android:text="书城" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/third__linear"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TabLabel"
+                    android:drawableTop="@drawable/third_tab_selector"
+                    android:text="分类" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/four_linear"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TabLabel"
+                    android:drawableTop="@drawable/four_tab_selector"
+                    android:text="我的" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</TabHost>

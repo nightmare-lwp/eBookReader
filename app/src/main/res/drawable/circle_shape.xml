@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <!--添加圆角度数-->
+    <corners android:radius="999999dp"/>
+    <!--添加白色边框-->
+    <stroke android:color="#eee" android:width="25dp"/>
+</shape>
