@@ -1,6 +1,8 @@
 package com.lwp.ebook.Adapter;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,29 +12,33 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.lwp.ebook.ContentActivity;
+import com.lwp.ebook.FirstPageActivity;
 import com.lwp.ebook.R;
+import com.lwp.ebook.SearchResultActivity;
+import com.lwp.ebook.SecondPageActivity;
 import com.lwp.ebook.model.Book;
 
 import java.util.List;
 public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> {
     private List<Book> bookList;
+    private Context context;
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView book_cover;
         TextView book_title;
         TextView book_author;
-        TextView book_desc;
 
         public ViewHolder(View view) {
             super(view);
             book_cover=view.findViewById(R.id.book_cover);
             book_title=view.findViewById(R.id.book_title);
             book_author=view.findViewById(R.id.book_author);
-//            book_desc=view.findViewById(R.id.book_desc);
         }
     }
 
-    public FirstAdapter(List<Book> items) {
-        bookList= items;
+    public FirstAdapter(List<Book> items,Context context) {
+        this.bookList= items;
+        this.context=context;
     }
     @NonNull
     @Override
@@ -45,11 +51,10 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                Book item = bookList.get(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
-                builder.setTitle(item.getTitle());
-                builder.setMessage("这是【"+item.getTitle()+"】");
-                builder.show();
+                Book book = bookList.get(position);
+                Intent intent = new Intent(context, ContentActivity.class);
+                intent.putExtra("fictionId",book.getFictionId());
+                context.startActivity(intent);
             }
         });
         return holder;

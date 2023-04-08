@@ -1,25 +1,37 @@
 package com.lwp.ebook.model;
 
 public class Book {
+
     private String fictionId;
     private String title;
     private String author;
     private String fictionType;
-    private String desc;
+    private String descs;
     private String cover;
     private String updateTime;
 
-    public Book() {
-    }
-
-    public Book(String fictionId, String title, String author, String fictionType, String desc, String cover, String updateTime) {
+    public Book(){}
+    public Book(String fictionId, String title, String author, String fictionType, String descs, String cover, String updateTime) {
         this.fictionId = fictionId;
         this.title = title;
         this.author = author;
         this.fictionType = fictionType;
-        this.desc = desc;
+        this.descs = descs;
         this.cover = cover;
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "fictionId='" + fictionId + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", fictionType='" + fictionType + '\'' +
+                ", descs='" + descs + '\'' +
+                ", cover='" + cover + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                '}';
     }
 
     public String getFictionId() {
@@ -54,12 +66,12 @@ public class Book {
         this.fictionType = fictionType;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescs() {
+        return descs;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescs(String descs) {
+        this.descs = descs;
     }
 
     public String getCover() {

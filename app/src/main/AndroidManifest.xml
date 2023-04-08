@@ -25,6 +25,12 @@
             android:name=".FourPageActivity"
             android:exported="false" />
         <activity
+            android:name=".SearchResultActivity"
+            android:exported="false" />
+        <activity android:name=".ContentActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".TabHostActivity"
             android:exported="true">
             <intent-filter>
@@ -35,6 +41,6 @@
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

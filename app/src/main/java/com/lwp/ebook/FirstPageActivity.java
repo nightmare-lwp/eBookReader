@@ -1,5 +1,6 @@
 package com.lwp.ebook;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,10 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lwp.ebook.Adapter.FirstAdapter;
-import com.lwp.ebook.Adapter.FourAdapter;
 import com.lwp.ebook.databinding.ActivityFirstPageBinding;
 import com.lwp.ebook.model.Book;
-import com.lwp.ebook.model.FourItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class FirstPageActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.first_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        FirstAdapter adapter=new FirstAdapter(bookList);
+        FirstAdapter adapter=new FirstAdapter(bookList,this);
         recyclerView.setAdapter(adapter);
     }
     public void initList(){
