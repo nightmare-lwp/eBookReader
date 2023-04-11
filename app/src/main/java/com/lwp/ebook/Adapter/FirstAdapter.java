@@ -19,6 +19,7 @@ import com.lwp.ebook.SearchResultActivity;
 import com.lwp.ebook.SecondPageActivity;
 import com.lwp.ebook.model.Book;
 
+import java.io.Serializable;
 import java.util.List;
 public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> {
     private List<Book> bookList;
@@ -53,7 +54,7 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
                 int position = holder.getAdapterPosition();
                 Book book = bookList.get(position);
                 Intent intent = new Intent(context, ContentActivity.class);
-                intent.putExtra("fictionId",book.getFictionId());
+                intent.putExtra("book", book);
                 context.startActivity(intent);
             }
         });

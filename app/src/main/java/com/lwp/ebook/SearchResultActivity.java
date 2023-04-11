@@ -41,7 +41,8 @@ public class SearchResultActivity extends AppCompatActivity implements SearchVie
         //搜索内容访问Api，并更新UI
         Intent intent = getIntent();
         String searchText = intent.getStringExtra("search_text");
-        bookList= HttpUtils.fiction("title",searchText);
+        HttpUtils.fiction(this,"title",searchText);
+        //先装载一个空的RecyclerView
         RecyclerView recyclerView = findViewById(R.id.search_result);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -51,12 +52,7 @@ public class SearchResultActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        bookList= HttpUtils.fiction("title",query);
-        RecyclerView recyclerView = findViewById(R.id.search_result);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        FirstAdapter adapter=new FirstAdapter(bookList,this);
-        recyclerView.setAdapter(adapter);
+        HttpUtils.fiction(this,"title",query);
         return true;
     }
 
