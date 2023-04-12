@@ -10,6 +10,7 @@ public class Chapter {
         this.chapterId = chapterId;
     }
     public Chapter(){}
+
     public String getTitle() {
         return title;
     }

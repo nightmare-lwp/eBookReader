@@ -249,7 +249,7 @@ public class HttpUtils {
         });
         return contents;
     }
-    public static List<Chapter> fictionChapter(final Activity activity,Book book,List<Chapter> chapters){
+    public static List<Chapter> fictionChapter(final Activity activity,Book book,List<Chapter> chapters,PopupWindow popupWindow){
         OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
                 .url(baseUrl+"/fictionChapter/search/"+book.getFictionId())
@@ -281,8 +281,9 @@ public class HttpUtils {
                                 chapter.setChapterId(chapterList.getJSONObject(i).getString("chapterId"));
                                 chapters.add(chapter);
                             }
-
                             activity.runOnUiThread(()->{
+                                //当接口访问完成后，关闭加载页面
+                                popupWindow.dismiss();
                                 HttpUtils.updateChapterUI(activity,book,chapters,position);
                             });
 
@@ -319,7 +320,7 @@ public class HttpUtils {
             });
         }).start();
     }
-    public static void updateChapterUI(Activity activity,Book book,List<Chapter> chapters,int position){
+    public static PopupWindow updateChapterUI(Activity activity,Book book,List<Chapter> chapters,int position){
         PopupWindow popupWindow = new PopupWindow(activity);
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -336,6 +337,7 @@ public class HttpUtils {
         recyclerView.setAdapter(adapter);
         recyclerView.scrollToPosition(position);
         popupWindow.showAtLocation(view, Gravity.LEFT, 0, 0);
+        return popupWindow;
     }
     public static int getPosition(Activity activity,String fictionId,int userId){
         MyApplication app = (MyApplication) activity.getApplication();

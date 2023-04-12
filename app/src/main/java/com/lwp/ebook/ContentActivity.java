@@ -69,8 +69,14 @@ public class ContentActivity extends AppCompatActivity {
         title=findViewById(R.id.toolbar_title);
         title.setText("正在加载中...");
         list=findViewById(R.id.list);
-        list.setOnClickListener(v->
-            HttpUtils.fictionChapter(this,book,chapters)
+        list.setOnClickListener(v->{
+            List<Chapter> stringList=new ArrayList<>();
+            stringList.add(new Chapter("正在加载中",""));
+            PopupWindow popupWindow= HttpUtils.updateChapterUI(this,book,stringList,0);
+            HttpUtils.fictionChapter(this,book,chapters,popupWindow);
+        }
+
+
         );
         plus=findViewById(R.id.plus);
         if(flag){
