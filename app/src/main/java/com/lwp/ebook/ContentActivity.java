@@ -30,6 +30,8 @@ import com.lwp.ebook.model.database.AppDatabase;
 import com.lwp.ebook.model.database.User;
 import com.lwp.ebook.model.database.UserDao;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class ContentActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView title;
     private ImageView list;
-    int position;
+    private ImageView plus;
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class ContentActivity extends AppCompatActivity {
         //获取小说内容
         Intent intent=getIntent();
         Book book=intent.getSerializableExtra("book",Book.class);
+        boolean flag=intent.getBooleanExtra("flag",false);
         HttpUtils.fictionContentByFiction(this,book);
         RecyclerView recyclerView = findViewById(R.id.book_content);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -66,9 +69,32 @@ public class ContentActivity extends AppCompatActivity {
         title=findViewById(R.id.toolbar_title);
         title.setText("正在加载中...");
         list=findViewById(R.id.list);
-        list.setOnClickListener(v->{
-            HttpUtils.fictionChapter(this,book,chapters);
-        });
+        list.setOnClickListener(v->
+            HttpUtils.fictionChapter(this,book,chapters)
+        );
+        plus=findViewById(R.id.plus);
+        if(flag){
+            toolbar.removeView(plus);
+        }else{
+            plus.setOnClickListener(v->{
+                new Thread(()->{
+                    MyApplication app = (MyApplication) this.getApplication();
+                    AppDatabase db = app.getDatabase();
+                    User user=db.userDao().get(book.getFictionId(),1);
+                    if(user==null){
+                        db.userDao().insertAll(new User(1,book.getFictionId(), book.getTitle(), book.getAuthor(), book.getFictionType(), book.getDescs(), book.getCover(),book.getUpdateTime(),0,"暂无章节",false));
+                        user=db.userDao().get(book.getFictionId(),1);
+                    }
+                    user.setFlag(true);
+                    db.userDao().updateAll(user);
+                    runOnUiThread(()->{
+                        Toast.makeText(app, "已加入书架", Toast.LENGTH_SHORT).show();
+                        toolbar.removeView(plus);
+                    });
+                    EventBus.getDefault().post(new UpdateUIEvent());
+                }).start();
+            });
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

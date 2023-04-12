@@ -21,8 +21,10 @@ public interface UserDao {
 
     @Query("select * from user where fictionId=:fictionId and userId=:userId")
     User get(String fictionId,int userId);
-    @Query("select * from user where userId=:userId")
+    @Query("select * from user where userId=:userId and flag=1")
     List<User> getBookList(int userId);
-    @Query("update user set position=:position where id=:id")
-    void update(int id,int position);
+    @Query("update user set position=:position,readChapter=:readChapter where id=:id")
+    void update(int id,int position,String readChapter);
+    @Update
+    void updateAll(User user);
 }

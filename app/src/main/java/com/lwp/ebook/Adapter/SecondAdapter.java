@@ -1,38 +1,26 @@
 package com.lwp.ebook.Adapter;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.lwp.ebook.ContentActivity;
-import com.lwp.ebook.FirstPageActivity;
-import com.lwp.ebook.MyApplication;
 import com.lwp.ebook.R;
-import com.lwp.ebook.SearchResultActivity;
-import com.lwp.ebook.SecondPageActivity;
-import com.lwp.ebook.UpdateUIEvent;
 import com.lwp.ebook.model.Book;
-import com.lwp.ebook.model.database.AppDatabase;
-import com.lwp.ebook.model.database.User;
 
-import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> {
+public class SecondAdapter extends RecyclerView.Adapter<SecondAdapter.ViewHolder>{
     private List<Book> bookList;
     private Context context;
     private boolean flag;
@@ -41,20 +29,18 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
         ImageView book_cover;
         TextView book_title;
         TextView book_author;
-        ImageView book_delete;
-        TextView read_chapter;
+        TextView book_descs;
 
         public ViewHolder(View view) {
             super(view);
             book_cover = view.findViewById(R.id.book_cover);
             book_title = view.findViewById(R.id.book_title);
             book_author = view.findViewById(R.id.book_author);
-            book_delete=view.findViewById(R.id.delete);
-            read_chapter=view.findViewById(R.id.read_chapter);
+            book_descs=view.findViewById(R.id.book_descs);
         }
     }
 
-    public FirstAdapter(List<Book> items, boolean flag, Context context) {
+    public SecondAdapter(List<Book> items, boolean flag, Context context) {
         this.bookList = items;
         this.context = context;
         this.flag = flag;
@@ -62,13 +48,11 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SecondAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_first, parent, false);
-
-
-        final ViewHolder holder = new ViewHolder(view);
+                .inflate(R.layout.item_second, parent, false);
+        final SecondAdapter.ViewHolder holder = new SecondAdapter.ViewHolder(view);
         // 设置点击事件
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,21 +69,11 @@ public class FirstAdapter extends RecyclerView.Adapter<FirstAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SecondAdapter.ViewHolder holder, int position) {
         Book book = bookList.get(position);
         holder.book_title.setText(book.getTitle());
         holder.book_author.setText(book.getAuthor());
-        holder.read_chapter.setText(book.getReadChapter());
-        holder.book_delete.setOnClickListener(v->{
-            new Thread(() -> {
-                MyApplication app = (MyApplication) context.getApplicationContext();
-                AppDatabase db = app.getDatabase();
-                User user = db.userDao().get(book.getFictionId(), 1);
-                user.setFlag(false);
-                db.userDao().updateAll(user);
-                EventBus.getDefault().post(new UpdateUIEvent());
-            }).start();
-        });
+        holder.book_descs.setText(book.getDescs());
         // 使用网络请求库下载图片
         Glide.with(holder.itemView).load(book.getCover()).into(holder.book_cover);
     }

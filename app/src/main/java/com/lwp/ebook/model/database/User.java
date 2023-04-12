@@ -17,11 +17,13 @@ public class User {
     private String cover;
     private String updateTime;
     public int position;
-
+    public String readChapter;
+    //是否加入书架
+    public boolean flag;
     public User() {
     }
     @Ignore
-    public User(int userId, String fictionId, String title, String author, String fictionType, String descs, String cover, String updateTime, int position) {
+    public User(int userId, String fictionId, String title, String author, String fictionType, String descs, String cover, String updateTime, int position,String readChapter,boolean flag) {
         this.userId = userId;
         this.fictionId = fictionId;
         this.title = title;
@@ -31,6 +33,8 @@ public class User {
         this.cover = cover;
         this.updateTime = updateTime;
         this.position = position;
+        this.readChapter=readChapter;
+        this.flag = flag;
     }
 
     public int getId() {
@@ -111,5 +115,21 @@ public class User {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+
+    public String getReadChapter() {
+        return readChapter;
+    }
+
+    public void setReadChapter(String readChapter) {
+        this.readChapter = readChapter;
     }
 }

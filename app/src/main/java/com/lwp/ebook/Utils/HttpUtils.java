@@ -11,20 +11,25 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.lwp.ebook.Adapter.ChapterAdapter;
+import com.lwp.ebook.Adapter.ClassAdapter;
 import com.lwp.ebook.Adapter.ContentAdapter;
 import com.lwp.ebook.Adapter.FirstAdapter;
+import com.lwp.ebook.Adapter.SecondAdapter;
 import com.lwp.ebook.MyApplication;
 import com.lwp.ebook.R;
+import com.lwp.ebook.UpdateUIEvent;
 import com.lwp.ebook.model.Book;
 import com.lwp.ebook.model.Chapter;
 import com.lwp.ebook.model.database.AppDatabase;
 import com.lwp.ebook.model.database.User;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +47,7 @@ import okhttp3.Response;
 
 public class HttpUtils {
     private static final String baseUrl="https://api.pingcc.cn";
-    public static List<Book> fiction(final Activity activity,String option, String key){
+    public static List<Book> fiction(final Activity activity,String option, String key,Integer adapter){
         List<Book> bookList=new ArrayList<>();
         OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
@@ -73,13 +78,24 @@ public class HttpUtils {
                                 Book book = gson.fromJson(data.get(i).toString(), Book.class);
                                 bookList.add(book);
                             }
-                            activity.runOnUiThread(()->{
-                                RecyclerView recyclerView = activity.findViewById(R.id.search_result);
-                                LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
-                                recyclerView.setLayoutManager(layoutManager);
-                                FirstAdapter adapter=new FirstAdapter(bookList,activity);
-                                recyclerView.setAdapter(adapter);
-                            });
+                            if(adapter==1){
+                                activity.runOnUiThread(()->{
+                                    RecyclerView recyclerView = activity.findViewById(R.id.search_result);
+                                    LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    SecondAdapter secondAdapter=new SecondAdapter(bookList,false,activity);
+                                    recyclerView.setAdapter(secondAdapter);
+                                });
+                            }else if(adapter==3){
+                                activity.runOnUiThread(()->{
+                                    RecyclerView recyclerView = activity.findViewById(R.id.class_content_recyclerview);
+                                    LinearLayoutManager layoutManager=new LinearLayoutManager(activity);
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    SecondAdapter secondAdapter=new SecondAdapter(bookList,false,activity);
+                                    recyclerView.setAdapter(secondAdapter);
+                                });
+                            }
+
                         }catch (JSONException e){
                             e.printStackTrace();
                         }
@@ -202,7 +218,7 @@ public class HttpUtils {
                     onFailure(call, new IOException("Unexpected Code: " + response));
                 } else {
                     try {
-                        setPosition(activity,book,position);
+
                         String responseBody = response.body().string();
                         // 解析JSON数据
                         try {
@@ -212,6 +228,7 @@ public class HttpUtils {
                             for (int i = 0; i < data.length(); i++) {
                                 contents.add(data.get(i).toString());
                             }
+                            setPosition(activity,book,position,chapter.getTitle());
                             activity.runOnUiThread(()->{
                                 RecyclerView recyclerView = activity.findViewById(R.id.book_content);
                                 LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
@@ -233,10 +250,6 @@ public class HttpUtils {
         return contents;
     }
     public static List<Chapter> fictionChapter(final Activity activity,Book book,List<Chapter> chapters){
-//        if(chapters.size()!=0){
-//            HttpUtils.updateChapterUI(activity,book,chapters,position);
-//            return chapters;
-//        }
         OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
                 .url(baseUrl+"/fictionChapter/search/"+book.getFictionId())
@@ -284,19 +297,20 @@ public class HttpUtils {
         });
         return chapters;
     }
-    public static void fictionList(Activity activity,int userId,List<Book> bookList){
+    public static void fictionList(Activity activity,int userId){
         new Thread(()->{
             MyApplication app = (MyApplication) activity.getApplication();
             AppDatabase db = app.getDatabase();
-            List<User> userList=db.userDao().getAll();
+            List<User> userList=db.userDao().getBookList(1);
+            List<Book> bookList=new ArrayList<>();
             for(User user:userList){
-                bookList.add(new Book(user.getFictionId(),user.getTitle(),user.getAuthor(),user.getFictionType(),user.getDescs(),user.getCover(),user.getUpdateTime()));
+                bookList.add(new Book(user.getFictionId(),user.getTitle(),user.getAuthor(),user.getFictionType(),user.getDescs(),user.getCover(),user.getUpdateTime(),user.getReadChapter()));
             }
             activity.runOnUiThread(()->{
                 RecyclerView recyclerView = activity.findViewById(R.id.first_recyclerview);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
                 recyclerView.setLayoutManager(layoutManager);
-                FirstAdapter adapter=new FirstAdapter(bookList,activity);
+                FirstAdapter adapter=new FirstAdapter(bookList,true,activity);
                 recyclerView.setAdapter(adapter);
                 TextView title=activity.findViewById(R.id.toolbar_title);
                 title.setText("我的书架");
@@ -333,16 +347,18 @@ public class HttpUtils {
         }
         return position;
     }
-    public static void setPosition(Activity activity,Book book,int position){
+    public static void setPosition(Activity activity,Book book,int position,String readChapter){
         MyApplication app = (MyApplication) activity.getApplication();
         AppDatabase db = app.getDatabase();
         User user=db.userDao().get(book.getFictionId(),1);
         //如果没有记录，则新增一条记录
         if(user==null){
-            db.userDao().insertAll(new User(1,book.getFictionId(), book.getTitle(), book.getAuthor(), book.getFictionType(), book.getDescs(), book.getCover(),book.getUpdateTime(),position));
+            db.userDao().insertAll(new User(1,book.getFictionId(), book.getTitle(), book.getAuthor(), book.getFictionType(), book.getDescs(), book.getCover(),book.getUpdateTime(),position,readChapter,false));
         }else{
-            db.userDao().update(user.getId(),position);
+            System.out.println("这是打印的数据："+user.getId()+" "+position+" "+readChapter);
+            db.userDao().update(user.getId(),position,readChapter);
         }
+        EventBus.getDefault().post(new UpdateUIEvent());
     }
 }
 

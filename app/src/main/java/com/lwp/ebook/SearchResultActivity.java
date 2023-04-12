@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lwp.ebook.Adapter.FirstAdapter;
+import com.lwp.ebook.Adapter.SecondAdapter;
 import com.lwp.ebook.Utils.HttpUtils;
 import com.lwp.ebook.model.Book;
 
@@ -41,18 +42,18 @@ public class SearchResultActivity extends AppCompatActivity implements SearchVie
         //搜索内容访问Api，并更新UI
         Intent intent = getIntent();
         String searchText = intent.getStringExtra("search_text");
-        HttpUtils.fiction(this,"title",searchText);
+        HttpUtils.fiction(this,"title",searchText,1);
         //先装载一个空的RecyclerView
         RecyclerView recyclerView = findViewById(R.id.search_result);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        FirstAdapter adapter=new FirstAdapter(bookList,this);
+        SecondAdapter adapter=new SecondAdapter(bookList,false,this);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        HttpUtils.fiction(this,"title",query);
+        HttpUtils.fiction(this,"title",query,1);
         return true;
     }
 

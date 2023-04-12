@@ -11,9 +11,10 @@ public class Book implements Serializable {
     private String descs;
     private String cover;
     private String updateTime;
+    private String readChapter;
 
     public Book(){}
-    public Book(String fictionId, String title, String author, String fictionType, String descs, String cover, String updateTime) {
+    public Book(String fictionId, String title, String author, String fictionType, String descs, String cover, String updateTime,String readChapter) {
         this.fictionId = fictionId;
         this.title = title;
         this.author = author;
@@ -21,6 +22,7 @@ public class Book implements Serializable {
         this.descs = descs;
         this.cover = cover;
         this.updateTime = updateTime;
+        this.readChapter=readChapter;
     }
 
     @Override
@@ -90,5 +92,13 @@ public class Book implements Serializable {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getReadChapter() {
+        return readChapter;
+    }
+
+    public void setReadChapter(String readChapter) {
+        this.readChapter = readChapter;
     }
 }

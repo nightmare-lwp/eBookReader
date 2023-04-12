@@ -13,7 +13,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "eBookReader").build();
+                AppDatabase.class, "eBookReader").fallbackToDestructiveMigration().build();
     }
 
     public AppDatabase getDatabase() {
